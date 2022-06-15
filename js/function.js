@@ -1,9 +1,14 @@
 $(document).ready(function(){
+
+  //-----------------------------------[gnb & others]
+
 $(function(){
 
   // -------------------------------------- [gnb & article]
 
   const $mnu = $('header > .side-gnb > .sideg > li > a');
+  const $home = $('header > .side-gnb > .sideg > li:nth-child(1) > a');
+  const $header = $('header');
   // const $section = $('section');
   // $section.height($(window).height());
 
@@ -15,20 +20,39 @@ $(function(){
   for(let i=0;i<$mnu.length;i++){
     arrTopVal[i] = $('article').eq(i).offset().top;
   }
-
+  
   console.log('arrTopVal =',arrTopVal);
-
+  
   //네비게이션 메뉴 클릭이벤트 
   $mnu.on('click', function(evt){
     evt.preventDefault();
-
+    
     nowIdx = $mnu.index(this);
+    // $mnu.eq(nowIdx).addClass('on').siblings().removeClass('on');
 
+    
+    
     $('html,body').stop().animate({
-      scrollTop : arrTopVal[nowIdx]-50
+      scrollTop : arrTopVal[nowIdx]
       // scrollTop : arrTopVal[nowIdx]+45
     },400)
+
+    $header.addClass('on');
   });
+  
+  $home.on('click', function(evt){
+    evt.preventDefault();
+
+    nowIdx = $home.index(this);
+
+    $('html,body').stop().animate({
+      scrollTop : arrTopVal[nowIdx]
+    },400)
+
+    $header.removeClass('on');
+  });
+
+
 
 
   //브라우저의 scroll 이벤트 구문
@@ -38,17 +62,20 @@ $(function(){
     console.log('scrollTop=',scrollTop)
 
     for(let i=0;i<arrTopVal.length;i++){
-      if(scrollTop>=arrTopVal[i]-50){
+      if(scrollTop>=arrTopVal[i]){
       // if(scrollTop>=arrTopVal[i]+45){
 
         //활성화표시
         $mnu.eq(i).parent().addClass('on').siblings().removeClass('on');
 
-      } else if(scrollTop<arrTopVal[0]-50){
+        // scroll시 메뉴 활성화
+      } else if(scrollTop<arrTopVal[0]){
       // } else if(scrollTop<arrTopVal[0]+45){
         $mnu.parent().removeClass('on');
       }
     }
+
+    
 
   //  ------------------------------------------[ aside ]
 
@@ -62,14 +89,18 @@ $(function(){
 
   });
 
+});
 
+$(function(){
   //.logo>a, aside>a 클릭시 맨위로 이동
+
   $('.logo>a, aside>a').on('click', function(evt){
     evt.preventDefault();
 
     $('html,body').stop().animate({
       scrollTop:0
     })
+
   });
 
   //처음 접속시 load 이벤트 구문
@@ -79,7 +110,10 @@ $(function(){
     });
   });
 
+}); 
+
   // ---------------------------top nav
+  $(function(){
 
   const $gnb = $('.container > .top-nav > .top-gnb');
   const $lnb = $gnb.find('.lnb');
@@ -112,8 +146,11 @@ $(function(){
       $gnb.trigger('mouseout');        
   });
 
+});
 
-    // ---------------------------sub gnb
+  // ---------------------------sub gnb
+
+    $(function(){
 
     const $sub = $('.container > .sub-nav >.sub');
     
@@ -179,7 +216,7 @@ $(function(){
 
   //-----------------------------------[ visual ]
 
-  $(function() {
+  $(function(){
     const $visual = $('.visual');
     const $slides = $visual.children('div');
     const $video = $slides.find('video');
@@ -213,60 +250,55 @@ $(function(){
     }); //end of reload
   }); //end of function
   
-
     //-----------------------------------[ slideup ]
 
-    $(function () {
+    $(function (){
 
       const $boxindicator = $('.boxes > .box-pagination > li > a ');
       const $boxContainer = $('.boxes >.boxwrap >.box-container');
-
 
       let indicatorIdx = 0;
       let bxContainerIdxs = 0;
 
       //클릭했을때
-      $boxindicator.on('mouseenter', function (evt) {
-        evt.preventDefault();
+      $boxindicator.on('mouseenter', function () {
 
         indicatorIdx = $boxindicator.index(this);
-        console.log(indicatorIdx);
-
         bxContainerIdxs = indicatorIdx;
-        console.log(bxContainerIdxs);
 
-        //1 활성화표시
+        //활성화표시
         $boxindicator.eq(indicatorIdx).parent().removeClass('on').addClass('on').siblings().removeClass('on');
         $boxContainer.eq(bxContainerIdxs).removeClass('on').addClass('on').siblings().removeClass('on');
-
-        //2 컨테이너이동
-        // $boxContainer.eq(bxContainerIdxs).css({
-        //   display: initial
-        // });
+    
         $boxContainer.eq(bxContainerIdxs).stop().animate({
-          bottom:0
+          bottom:-100
         }, 500);
 
+        // $boxContainer.eq(bxContainerIdxs).show().slideUp();
       });
 
-      $boxContainer.on('mouseleave', function (evt) {
-        evt.preventDefault();
-        // $display.eq(nowIdxs).stop().hide();
+      $boxContainer.on('mouseleave', function () {
+        
         $boxContainer.eq(bxContainerIdxs).stop().animate({
-          bottom:-300
-        }, 10);
+          bottom:-400
+        }, 100);
 
-        $boxContainer.eq(bxContainerIdxs).css({
-          display: none
-        });
-      });
-
+        // $boxContainer.eq(bxContainerIdxs).slideDown(500);
+        // $boxContainer.hide();
     });
 
+    $boxindicator.on('click', function(evt){
+      evt.preventDefault();
+     });
 
-    //-----------------------------------[ #company ]
+     $boxContainer.on('click', function(evt){
+      evt.preventDefault();
+     });
+  });
 
-    $(function() {
+    //-----------------------------------[ .company ]
+
+    $(function(){
       const $company = $('.company');
       const $slides = $('.slides');
       const $sldsContainer = $('.slides-container');
@@ -275,9 +307,9 @@ $(function(){
       
 
 
-      // $(window).on('load resize', function() {
-        // $company.width($(window).width());
-        // $slides.width($(window).width());
+    //   $(window).on('load resize', function() {
+    //     $company.height($(window).height());
+    //     $slides.width($(window).width());
  
     //  });//end of #compnay
 
@@ -285,6 +317,11 @@ $(function(){
      let companyIdx = 0;
      
      //클릭했을때
+
+     $sldsIndicator.on('click', function(evt){
+      evt.preventDefault();
+     });
+
      $sldsIndicator.on('mouseenter', function(evt){
        evt.preventDefault();
    
@@ -297,7 +334,7 @@ $(function(){
        $sldsContainer.stop().animate({
          left : -(100*companyIdx)+'%'
          
-       });
+       },800);
        
      });
 
@@ -306,6 +343,115 @@ $(function(){
 
     });
 
+    //-----------------------------------[ .management]
+
+    $(function(){
+      const $mng = $('.management');
+      const $mngslides = $('.slides-manage');
+      const $mngContainer = $('.manage-container');
+      const $mngIndicator = $('.manage-pagination > li > a');
+      const $mngcontents = $('.manage-contents');
+      const $txtanchor = $('.clickbox > a');
+
+     
+     let mngIdx = 0;
+     
+     //클릭했을때
+
+     $mngIndicator.on('click', function(evt){
+      evt.preventDefault();
+     });
+
+     $txtanchor.on('click', function(evt){
+      evt.preventDefault();
+     });
+
+
+     $mngIndicator.on('mouseenter', function(evt){
+       evt.preventDefault();
+   
+       mngIdx = $mngIndicator.index(this);
+       
+       //1 활성화표시
+       $mngIndicator.eq(mngIdx).parent().addClass('on').siblings().removeClass('on');
+   
+       //2 컨테이너이동
+       $mngContainer.stop().animate({
+         left : -(100*mngIdx)+'%'
+         
+       },800);
+       
+     });
+
+
+
+
+    });
+
+    //-----------------------------------[ .advertise]
+
+    $(function(){
+      const $ad = $('.advertise');
+      const $adslides = $('.slides-ad');
+      const $adContainer = $('.ad-container');
+      const $adIndicator = $('.adv-pagination > li > a');
+      const $adcontents = $('.ad-contents');
+      const $a = $('.adboxContainer > a');
+
+      $a.on('click', function(evt){
+        evt.preventDefault();
+       });
+
+     
+     let adIdx = 0;
+     
+     //클릭했을때
+     $adIndicator.on('click', function(evt){
+      evt.preventDefault();
+     });
+
+     $adIndicator.on('mouseenter', function(){
+   
+       adIdx = $adIndicator.index(this);
+       
+       //1 활성화표시
+       $adIndicator.eq(adIdx).parent().addClass('on').siblings().removeClass('on');
+   
+       //2 컨테이너이동
+       $adContainer.stop().animate({
+         left : -(100*adIdx)+'%'
+         
+       },800);
+       
+     });
+
+
+
+
+    });
+
+    //-----------------------------------[ footer]
+
+    $(function(){
+      const $laws = $('.right > .laws > li > a');
+      const $sns = $('.sns > .icon > a > i ');
+      const $others = $('.others > .icon > a > i ');
+
+      $laws.on('click', function(evt){
+        evt.preventDefault();
+       });
+      $sns.on('click', function(evt){
+        evt.preventDefault();
+       });
+      $others.on('click', function(evt){
+        evt.preventDefault();
+       });
+
+     
+   
+
   });
+
+});
     
  
